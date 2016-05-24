@@ -15,6 +15,14 @@ $(function() {
 
       $('#movies').empty();
 
+      //If the search returns no movie data, display the text "No movies found that match: 'title'."
+      //See a sample of the code you'll need to display in the index.html comments
+      if (data.Error === "Movie not found!") {
+        $('#movies').append('<li class="no-movies"><i class="material-icons icon-help">help_outline</i>No movies found that match: ' + searchKeywords + '.</li>');
+
+        return;
+      }
+
       //The data should load inside the #movies <ul>
 
       //Please see the comments in index.html for samples of the HTML you'll need to dynamically create with JavaScript
