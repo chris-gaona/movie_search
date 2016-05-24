@@ -25,12 +25,16 @@ $(function() {
       //Render an <img> that displays a poster image via the src attribute
       //Make sure you use the exact class names provided in the CSS
       $.each(searchResults, function() {
-        $('#movies').append('<li><div class="poster-wrap"><img class="movie-poster" src="' + this.Poster + '"></div><span class="movie-title">' + this.Title + '</span><span class="movie-year">' + this.Year + '</span></li>');
+        //The app should not display broken images when no poster image data is returned
+        //If the "Poster" parameter returns "N/A", render the placeholder icon shown in the index.html comments
+        if (this.Poster === "N/A") {
+          $('#movies').append('<li><div class="poster-wrap"><i class="material-icons poster-placeholder">crop_original</i></div><span class="movie-title">' + this.Title + '</span><span class="movie-year">' + this.Year + '</span></li>');
+        } else {
+          $('#movies').append('<li><div class="poster-wrap"><img class="movie-poster" src="' + this.Poster + '"></div><span class="movie-title">' + this.Title + '</span><span class="movie-year">' + this.Year + '</span></li>');
+        }
+
       }); //$.each ()
     }); //$.get ()
-
-    //The app should not display broken images when no poster image data is returned
-    //If the "Poster" parameter returns "N/A", render the placeholder icon shown in the index.html comments
 
   }); //.on click
 
