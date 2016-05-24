@@ -8,16 +8,17 @@ $(function() {
 
     var searchKeywords = $('#search').val();
     var urlSafeKeywords = searchKeywords.replace(' ', '+');
-    console.log(urlSafeKeywords);
 
-    $.get("http://www.omdbapi.com/?s=" + urlSafeKeywords + "&page=2&y=&r=json", function(data) {
-      var resultAmount = data.totalResults;
-      console.log(resultAmount);
-      paginateResults(resultAmount);
+    //Filter the search by year of release
+    var searchYear = $('#year').val();
 
+    $.get("http://www.omdbapi.com/?s=" + urlSafeKeywords + "&page=&y=" + searchYear + "&r=json", function(data) {
       console.log(data);
+
+      var resultAmount = data.totalResults;
+      // paginateResults(resultAmount);
+
       var searchResults = data.Search;
-      console.log(searchResults);
 
       $('#movies').empty();
 
@@ -41,10 +42,12 @@ $(function() {
       $.each(searchResults, function() {
         //The app should not display broken images when no poster image data is returned
         //If the "Poster" parameter returns "N/A", render the placeholder icon shown in the index.html comments
+
+        //Wrap the poster image -- or everything in the <li> -- in a <a> tag that links a movie to its imdb.com page
         if (this.Poster === "N/A") {
-          $('#movies').append('<li><div class="poster-wrap"><i class="material-icons poster-placeholder">crop_original</i></div><span class="movie-title">' + this.Title + '</span><span class="movie-year">' + this.Year + '</span></li>');
+          $('#movies').append('<li><a href="http://www.imdb.com/title/' + this.imdbID + '"><div class="poster-wrap"><i class="material-icons poster-placeholder">crop_original</i></div><span class="movie-title">' + this.Title + '</span><span class="movie-year">' + this.Year + '</span></a></li>');
         } else {
-          $('#movies').append('<li><div class="poster-wrap"><img class="movie-poster" src="' + this.Poster + '"></div><span class="movie-title">' + this.Title + '</span><span class="movie-year">' + this.Year + '</span></li>');
+          $('#movies').append('<li><a href="http://www.imdb.com/title/' + this.imdbID + '"><div class="poster-wrap"><img class="movie-poster" src="' + this.Poster + '"></div><span class="movie-title">' + this.Title + '</span><span class="movie-year">' + this.Year + '</span></a></li>');
         }
 
       }); //$.each ()
