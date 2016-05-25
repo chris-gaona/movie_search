@@ -158,8 +158,8 @@ button {
 
 .desc-color {
   position: relative;
-  top: -40px;
-  height: 200px;
+  top: -20px;
+  height: 250px;
   background-color: #333;
 }
 
@@ -167,17 +167,22 @@ button {
   position: relative;
   top: 70px;
   left: 0;
+  padding: 10px;
 }
 
 .desc-content img {
+  position: absolute;
+  left: 50%;
+  top: 200px;
   float: left;
-  margin: 0 40px 40px 40px;
-  border: 10px solid #fff;
+  width: 300px;
+  margin: 0 30px 40px -150px;
+  border: 10px solid #f6f7f7;
 }
 
 .desc-title {
   color: #fff;
-  font-size: 30px;
+  font-size: 25px;
   padding-right: 10px;
 }
 
@@ -193,9 +198,9 @@ button {
 }
 
 .plot {
-  position: absolute;
-  left: 400px;
-  top: 180px;
+  position: relative;
+  left: 0;
+  top: 450px;
   padding: 10px;
   padding-bottom: 30px;
   margin-bottom: 100px;
@@ -210,7 +215,7 @@ button {
 .imbd-link {
   position: absolute;
   top: 100%;
-  left: 0;
+  left: 5px;
   padding: 10px;
   background-color: #40e080;
   text-decoration: none;
@@ -271,6 +276,16 @@ button {
   }
 }
 
+@media (min-width: 400px) {
+  .desc-color {
+    height: 200px;
+  }
+
+  .plot {
+    top: 500px;
+  }
+}
+
 @media (min-width: 550px) {
   .movie-list li {
     float: left;
@@ -306,6 +321,22 @@ button {
 
 }
 
+@media (min-width: 650px) {
+  .plot {
+    position: absolute;
+    left: 270px;
+    top: 200px;
+  }
+
+  .desc-content img {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 200px;
+    margin: 0 30px 40px 30px;
+  }
+}
+
 @media (min-width: 769px) {
   body {
     padding-top: 115px;
@@ -324,11 +355,31 @@ button {
   .movie-list li {
     width: 33.333333333%;
   }
+
+  .desc-color {
+    top: -40px;
+    height: 225px;
+  }
+
+  .desc-content img {
+    width: auto;
+  }
+
+  .plot {
+    left: 390px;
+    top: 230px;
+  }
 }
 
 @media (min-width: 769px) and (max-width: 999px) {
   .movie-list li:nth-of-type(3n+1) {
     clear: left;
+  }
+}
+
+@media (min-width: 900px) {
+  .desc-title {
+    font-size: 30px;
   }
 }
 
