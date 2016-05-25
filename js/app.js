@@ -80,7 +80,7 @@ $(function() {
       if ($('#movies').length) {
         console.log('yup');
         var movieResults = $('#movies li');
-        showDescription(movieResults, urlSafeKeywords, searchYear);
+        showDescription(movieResults, urlSafeKeywords, searchYear, searchKeywords, linkNumber);
         nextPrevPage(resultAmount, urlSafeKeywords, searchYear, searchKeywords);
       }
     }); //$.get ()
@@ -91,7 +91,7 @@ $(function() {
   //Load or link to a description page displaying a movie's title, year, poster, plot information, and IMDb rating
   //You'll need to write the CSS for this new page
   //See the 'description-page.png' mockup in the 'examples' folder of the project files
-  function showDescription(results, keywords, year) {
+  function showDescription(results, keywords, year, searchKeywords, linkNumber) {
     console.log(results);
     results.on('click', function() {
       var movieTitle = $(this).find('.movie-title').text();
@@ -103,17 +103,17 @@ $(function() {
 
         $('.main-content').after('<div class="desc-content"><div class="desc-color"><a href="" class="back-button"><i class="material-icons back-icon">keyboard_arrow_left</i> Search Results</a><div class="desc-container"><img src="' + data.Poster + '"><div class="desc-title">' + data.Title + ' (' + data.Year + ')</div><span class="imbd-rating">IMBD rating: ' + data.imdbRating + '</span></div></div><div class="plot"><span class="plot-title">Plot Synopsis:</span>' + data.Plot + '<a href="http://www.imdb.com/title/' + data.imdbID + '" class="imbd-link">View on IMBD</a></div></div>');
 
-        backToResults(keywords, year);
+        backToResults(keywords, year, searchKeywords, linkNumber);
 
       });
     });
   }
 
-  function backToResults(keywords, year) {
+  function backToResults(keywords, year, searchKeywords, linkNumber) {
     $('.back-button').on('click', function(e) {
       e.preventDefault();
 
-      getResults(keywords, year)
+      getResults(keywords, year, searchKeywords, linkNumber)
     });
   }
 
