@@ -1,7 +1,7 @@
 $(function() {
   'use strict';
 
-  $('#movies').append('<li class="no-movies">Enter a search keyword.</li>');
+  $('#movies').append('<li class="no-movies"><i class="material-icons icon-help">search</i>Enter a search keyword.</li>');
 
   $('#submit').on('click', function(e) {
     e.preventDefault();
@@ -45,15 +45,41 @@ $(function() {
 
         //Wrap the poster image -- or everything in the <li> -- in a <a> tag that links a movie to its imdb.com page
         if (this.Poster === "N/A") {
-          $('#movies').append('<li><a href="http://www.imdb.com/title/' + this.imdbID + '"><div class="poster-wrap"><i class="material-icons poster-placeholder">crop_original</i></div><span class="movie-title">' + this.Title + '</span><span class="movie-year">' + this.Year + '</span></a></li>');
+          $('#movies').append('<li><div class="poster-wrap"><i class="material-icons poster-placeholder">crop_original</i></div><span class="movie-title">' + this.Title + '</span><span class="movie-year">' + this.Year + '</span></li>');
         } else {
-          $('#movies').append('<li><a href="http://www.imdb.com/title/' + this.imdbID + '"><div class="poster-wrap"><img class="movie-poster" src="' + this.Poster + '"></div><span class="movie-title">' + this.Title + '</span><span class="movie-year">' + this.Year + '</span></a></li>');
+          $('#movies').append('<li><div class="poster-wrap"><img class="movie-poster" src="' + this.Poster + '"></div><span class="movie-title">' + this.Title + '</span><span class="movie-year">' + this.Year + '</span></li>');
         }
 
       }); //$.each ()
+
+      if ($('#movies').length) {
+        console.log('yup');
+        var movieResults = $('#movies li');
+        showDescription(movieResults);
+      }
     }); //$.get ()
 
   }); //.on click
+
+
+  //Create a movie description page
+  //Load or link to a description page displaying a movie's title, year, poster, plot information, and IMDb rating
+  //You'll need to write the CSS for this new page
+  //See the 'description-page.png' mockup in the 'examples' folder of the project files
+  function showDescription(results) {
+    console.log(results);
+    results.on('click', function() {
+      var movieTitle = $(this).find('.movie-title').text();
+      var movieYear = $(this).find('.movie-year').text();
+      console.log(movieTitle);
+      $.get("http://www.omdbapi.com/?t=" + movieTitle + "&y=" + movieYear + "&plot=full&r=json", function(data) {
+        console.log(data);
+        $('#movies').empty();
+
+        $('.main-content').append('<div class="description-content"><img src="' + data.Poster + '"><div class="desc-title">' + data.Title + '</div>');
+      });
+    });
+  }
 
   function paginateResults(total) {
     var moviesPerPage = 10;
@@ -84,7 +110,7 @@ $(function() {
       //Uses jquery to append the dynamic html
       //linkNumber was defined above & starts at 1
       //and then every loop through gets 1 added
-      $('.main-content').append('<ul><li><a href="#">' + linkNumber++ + '</a></li></ul>');
+      $('.main-content #pagination').append('<li><a href="#">' + linkNumber++ + '</a></li>');
       //every loop until while loop is false, 1 is
       //added to links variable until it is equal to
       //totalLinks
