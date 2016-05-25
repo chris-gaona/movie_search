@@ -12,6 +12,11 @@ $(function() {
     //Filter the search by year of release
     var searchYear = $('#year').val();
 
+    getResults(urlSafeKeywords, searchYear)
+
+  }); //.on click
+
+  function getResults(urlSafeKeywords, searchYear) {
     $.get("http://www.omdbapi.com/?s=" + urlSafeKeywords + "&page=&y=" + searchYear + "&r=json", function(data) {
       console.log(data);
 
@@ -20,6 +25,7 @@ $(function() {
 
       var searchResults = data.Search;
 
+      $('.desc-content').empty();
       $('#movies').empty();
 
       //If the search returns no movie data, display the text "No movies found that match: 'title'."
@@ -55,18 +61,17 @@ $(function() {
       if ($('#movies').length) {
         console.log('yup');
         var movieResults = $('#movies li');
-        showDescription(movieResults);
+        showDescription(movieResults, urlSafeKeywords, searchYear);
       }
     }); //$.get ()
-
-  }); //.on click
+  }
 
 
   //Create a movie description page
   //Load or link to a description page displaying a movie's title, year, poster, plot information, and IMDb rating
   //You'll need to write the CSS for this new page
   //See the 'description-page.png' mockup in the 'examples' folder of the project files
-  function showDescription(results) {
+  function showDescription(results, keywords, year) {
     console.log(results);
     results.on('click', function() {
       var movieTitle = $(this).find('.movie-title').text();
@@ -77,7 +82,17 @@ $(function() {
         $('#movies').empty();
 
         $('.main-content').after('<div class="desc-content"><div class="desc-color"><a href="" class="back-button">< Search Results</a><div class="desc-container"><img src="' + data.Poster + '"><div class="desc-title">' + data.Title + ' (' + data.Year + ')</div><span class="imbd-rating">IMBD rating: ' + data.imdbRating + '</span></div></div><div class="plot"><span class="plot-title">Plot Synopsis:</span>' + data.Plot + '</div><a href="http://www.imdb.com/title/' + data.imdbID + '" class="imbd-link">View on IMBD</a></div>');
+
+        backToResults(keywords, year);
       });
+    });
+  }
+
+  function backToResults(keywords, year) {
+    $('.back-button').on('click', function(e) {
+      e.preventDefault();
+
+      getResults(keywords, year)
     });
   }
 

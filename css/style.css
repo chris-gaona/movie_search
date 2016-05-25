@@ -165,7 +165,7 @@ button {
 
 .desc-container {
   position: relative;
-  top: 60px;
+  top: 70px;
   left: 0;
 }
 
@@ -177,7 +177,7 @@ button {
 
 .desc-title {
   color: #fff;
-  font-size: 35px;
+  font-size: 30px;
 }
 
 .imbd-rating {
@@ -186,7 +186,7 @@ button {
 
 .back-button {
   position: absolute;
-  top: 20px;
+  top: 25px;
   left: 40px;
   color: #ccc;
 }
