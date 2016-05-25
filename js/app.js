@@ -12,11 +12,11 @@ $(function() {
     //Filter the search by year of release
     var searchYear = $('#year').val();
 
-    getResults(urlSafeKeywords, searchYear)
+    getResults(urlSafeKeywords, searchYear, searchKeywords)
 
   }); //.on click
 
-  function getResults(urlSafeKeywords, searchYear) {
+  function getResults(urlSafeKeywords, searchYear, searchKeywords) {
     $.get("http://www.omdbapi.com/?s=" + urlSafeKeywords + "&page=&y=" + searchYear + "&r=json", function(data) {
       console.log(data);
 
@@ -27,6 +27,12 @@ $(function() {
 
       $('.desc-content').empty();
       $('#movies').empty();
+
+      if (data.Error === "Something went wrong.") {
+        $('#movies').append('<li class="no-movies"><i class="material-icons icon-help">search</i>Enter a search keyword.</li>');
+
+        return;
+      }
 
       //If the search returns no movie data, display the text "No movies found that match: 'title'."
       //See a sample of the code you'll need to display in the index.html comments
@@ -77,7 +83,7 @@ $(function() {
       var movieTitle = $(this).find('.movie-title').text();
       var movieYear = $(this).find('.movie-year').text();
       console.log(movieTitle);
-      $.get("http://www.omdbapi.com/?t=" + movieTitle + "&y=" + movieYear + "&plot=full&r=json", function(data) {
+      $.get("http://www.omdbapi.com/?t=" + movieTitle + "&y=" + movieYear + "&plot=short&r=json", function(data) {
         console.log(data);
         $('#movies').empty();
 
