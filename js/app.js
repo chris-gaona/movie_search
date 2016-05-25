@@ -120,7 +120,7 @@ $(function() {
   var linkNumber = 1;
   var moviesPerPage = 10;
 
-  function nextPrevPage(total, urlSafeKeywords, year, searchYear, searchKeywords) {
+  function nextPrevPage(total, urlSafeKeywords, searchYear, searchKeywords) {
     $('.main-content #pagination').html('<li><a href="#" id="previous">Previous</a><a href="#" id="next">Next</li>');
 
     var totalLinks = Math.ceil(total/moviesPerPage);
