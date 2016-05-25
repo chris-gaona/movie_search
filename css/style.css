@@ -171,7 +171,7 @@ button {
 
 .desc-content img {
   float: left;
-  margin: 0 40px;
+  margin: 0 40px 40px 40px;
   border: 10px solid #fff;
 }
 
@@ -204,7 +204,7 @@ button {
 .imbd-link {
   position: relative;
   top: 35px;
-  left: 0;
+  left: 20px;
   padding: 10px;
   background-color: #40e080;
   text-decoration: none;
