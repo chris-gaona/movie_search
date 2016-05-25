@@ -14,7 +14,7 @@ $(function() {
     //Filter the search by year of release
     var searchYear = $('#year').val();
 
-    getResults(urlSafeKeywords, searchYear, searchKeywords)
+    getResults(urlSafeKeywords, searchYear, searchKeywords);
 
   }); //.on click
 
@@ -113,7 +113,7 @@ $(function() {
     $('.back-button').on('click', function(e) {
       e.preventDefault();
 
-      getResults(keywords, year, searchKeywords, linkNumber)
+      getResults(keywords, year, searchKeywords, linkNumber);
     });
   }
 
@@ -144,7 +144,7 @@ $(function() {
         return;
       }
 
-      linkNumber--
+      linkNumber--;
       console.log('Previous!');
       console.log(linkNumber);
       nextPrevPage();
@@ -159,7 +159,7 @@ $(function() {
         return;
       }
 
-      linkNumber++
+      linkNumber++;
       console.log('Next!');
       console.log(linkNumber);
       nextPrevPage();
