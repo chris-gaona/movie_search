@@ -3,6 +3,8 @@ $(function() {
 
   $('#movies').append('<li class="no-movies"><i class="material-icons icon-help">search</i>Enter a search keyword.</li>');
 
+  $('.no-movies').css('cursor', 'auto');
+
   $('#submit').on('click', function(e) {
     e.preventDefault();
 
@@ -16,8 +18,8 @@ $(function() {
 
   }); //.on click
 
-  function getResults(urlSafeKeywords, searchYear, searchKeywords) {
-    $.get("http://www.omdbapi.com/?s=" + urlSafeKeywords + "&page=&y=" + searchYear + "&r=json", function(data) {
+  function getResults(urlSafeKeywords, searchYear, searchKeywords, linkNumber) {
+    $.get("http://www.omdbapi.com/?s=" + urlSafeKeywords + "&page=" + linkNumber + "&y=" + searchYear + "&r=json", function(data) {
       console.log(data);
 
       var resultAmount = data.totalResults;
@@ -27,9 +29,13 @@ $(function() {
 
       $('.desc-content').empty();
       $('#movies').empty();
+      // $('.main-content #pagination').empty();
 
       if (data.Error === "Something went wrong.") {
         $('#movies').append('<li class="no-movies"><i class="material-icons icon-help">search</i>Enter a search keyword.</li>');
+
+        $('.no-movies').css('cursor', 'auto');
+        $('.main-content #pagination').empty();
 
         return;
       }
@@ -39,7 +45,14 @@ $(function() {
       if (data.Error === "Movie not found!") {
         $('#movies').append('<li class="no-movies"><i class="material-icons icon-help">help_outline</i>No movies found that match: ' + searchKeywords + '.</li>');
 
+        $('.no-movies').css('cursor', 'auto');
+        $('.main-content #pagination').empty();
+
         return;
+      }
+
+      if (data.totalResults <= 10) {
+        $('.main-content #pagination').empty();
       }
 
       //The data should load inside the #movies <ul>
@@ -68,6 +81,7 @@ $(function() {
         console.log('yup');
         var movieResults = $('#movies li');
         showDescription(movieResults, urlSafeKeywords, searchYear);
+        nextPrevPage(resultAmount, urlSafeKeywords, searchYear, searchKeywords);
       }
     }); //$.get ()
   }
@@ -87,9 +101,10 @@ $(function() {
         console.log(data);
         $('#movies').empty();
 
-        $('.main-content').after('<div class="desc-content"><div class="desc-color"><a href="" class="back-button">< Search Results</a><div class="desc-container"><img src="' + data.Poster + '"><div class="desc-title">' + data.Title + ' (' + data.Year + ')</div><span class="imbd-rating">IMBD rating: ' + data.imdbRating + '</span></div></div><div class="plot"><span class="plot-title">Plot Synopsis:</span>' + data.Plot + '<a href="http://www.imdb.com/title/' + data.imdbID + '" class="imbd-link">View on IMBD</a></div></div>');
+        $('.main-content').after('<div class="desc-content"><div class="desc-color"><a href="" class="back-button"><i class="material-icons back-icon">keyboard_arrow_left</i> Search Results</a><div class="desc-container"><img src="' + data.Poster + '"><div class="desc-title">' + data.Title + ' (' + data.Year + ')</div><span class="imbd-rating">IMBD rating: ' + data.imdbRating + '</span></div></div><div class="plot"><span class="plot-title">Plot Synopsis:</span>' + data.Plot + '<a href="http://www.imdb.com/title/' + data.imdbID + '" class="imbd-link">View on IMBD</a></div></div>');
 
         backToResults(keywords, year);
+
       });
     });
   }
@@ -102,41 +117,55 @@ $(function() {
     });
   }
 
-  function paginateResults(total) {
-    var moviesPerPage = 10;
+  var linkNumber = 1;
+  var moviesPerPage = 10;
 
-    $('#movies').empty();
-
-    //if number value passed through is less than or
-    //equal to 10 do the following...
-    if (total <= 10) {
-      //return, which stops anything after it from
-      //running...there is no need for page buttons
-      return;
-    }
+  function nextPrevPage(total, urlSafeKeywords, year, searchYear, searchKeywords) {
+    $('.main-content #pagination').html('<li><a href="#" id="previous">Previous</a><a href="#" id="next">Next</li>');
 
     var totalLinks = Math.ceil(total/moviesPerPage);
 
-    //links variable holds initial number to utilize
-    //in the while loop below...see below for more
-    var links = 0;
-    //linkNumber variable holds the intial number (1)
-    //to inject into the html using jquery
-    var linkNumber = 1;
-
-    //while links (initially 0 defined above) is less than totalLinks do the following...
-    //totalLinks in this case is by groupings of 10 students but could be
-    //some other value
-    while (links < totalLinks) {
-      //Uses jquery to append the dynamic html
-      //linkNumber was defined above & starts at 1
-      //and then every loop through gets 1 added
-      $('.main-content #pagination').append('<li><a href="#">' + linkNumber++ + '</a></li>');
-      //every loop until while loop is false, 1 is
-      //added to links variable until it is equal to
-      //totalLinks
-      links++;
+    if (linkNumber === 1) {
+      $('#previous').prop('disabled', true).addClass('disabled');
+    } else {
+      $('#previous').prop('disabled', false).removeClass('disabled');
     }
+
+    if (linkNumber === totalLinks) {
+      $('#next').prop('disabled', true).addClass('disabled');
+    } else {
+      $('#next').prop('disabled', false).removeClass('disabled');
+    }
+
+    $('#previous').on('click', function(e) {
+      e.preventDefault();
+
+      if (linkNumber === 1) {
+        return;
+      }
+
+      linkNumber--
+      console.log('Previous!');
+      console.log(linkNumber);
+      nextPrevPage();
+
+      getResults(urlSafeKeywords, searchYear, searchKeywords, linkNumber);
+    });
+
+    $('#next').on('click', function(e) {
+      e.preventDefault();
+
+      if (linkNumber === totalLinks) {
+        return;
+      }
+
+      linkNumber++
+      console.log('Next!');
+      console.log(linkNumber);
+      nextPrevPage();
+
+      getResults(urlSafeKeywords, searchYear, searchKeywords, linkNumber);
+    });
   }
 
 });
