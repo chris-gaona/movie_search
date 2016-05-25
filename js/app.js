@@ -76,7 +76,7 @@ $(function() {
         console.log(data);
         $('#movies').empty();
 
-        $('.main-content').append('<div class="description-content"><img src="' + data.Poster + '"><div class="desc-title">' + data.Title + '</div>');
+        $('.main-content').after('<div class="desc-content"><div class="desc-color"><a href="" class="back-button">< Search Results</a><div class="desc-container"><img src="' + data.Poster + '"><div class="desc-title">' + data.Title + ' (' + data.Year + ')</div><span class="imbd-rating">IMBD rating: ' + data.imdbRating + '</span></div></div><div class="plot"><span class="plot-title">Plot Synopsis:</span>' + data.Plot + '</div><a href="http://www.imdb.com/title/' + data.imdbID + '" class="imbd-link">View on IMBD</a></div>');
       });
     });
   }

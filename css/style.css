@@ -59,6 +59,9 @@ button {
 /* =================================
   Page Components
 ==================================== */
+#movies li {
+  cursor: pointer;
+}
 
 .main-title {
   font-size: 1.4em;
@@ -149,6 +152,66 @@ button {
 }
 
 /* MOVIE DESCRIPTION COMPONENTS -------- */
+.desc-content {
+  position: relative;
+}
+
+.desc-color {
+  position: relative;
+  top: -40px;
+  height: 200px;
+  background-color: #333;
+}
+
+.desc-container {
+  position: relative;
+  top: 60px;
+  left: 0;
+}
+
+.desc-content img {
+  float: left;
+  margin: 0 40px;
+  border: 10px solid #fff;
+}
+
+.desc-title {
+  color: #fff;
+  font-size: 35px;
+}
+
+.imbd-rating {
+  color: #ccc;
+}
+
+.back-button {
+  position: absolute;
+  top: 20px;
+  left: 40px;
+  color: #ccc;
+}
+
+.plot {
+  padding: 10px;
+}
+
+.plot-title {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.imbd-link {
+  position: relative;
+  top: 35px;
+  left: 0;
+  padding: 10px;
+  background-color: #40e080;
+  text-decoration: none;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 2px;
+}
 
 /* =================================
   Layout Styles
