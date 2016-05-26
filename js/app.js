@@ -13,11 +13,15 @@ $(function() {
       moviesPerPage,
       totalLinks;
 
+  var $movies = $('#movies'),
+      $noMovies = $('.no-movies'),
+      $pagination = $('.main-content #pagination');
+
   //appends enter search icon & text on page load
-  $('#movies').append('<li class="no-movies"><i class="material-icons icon-help">search</i>Enter a search keyword.</li>');
+  $movies.append('<li class="no-movies"><i class="material-icons icon-help">search</i>Enter a search keyword.</li>');
 
   //changes cursor to auto
-  $('.no-movies').css('cursor', 'auto');
+  $noMovies.css('cursor', 'auto');
 
   //on click of submit button
   $('#submit').on('click', function(e) {
@@ -53,25 +57,25 @@ $(function() {
       //empties the following 2 containers just in case there is already
       //content to make room for new query content
       $('.desc-content').empty();
-      $('#movies').empty();
+      $movies.empty();
 
       //if user submits search without any query, add a message
       //to the user & stop all other actions after this
       if (data.Error === "Something went wrong.") {
-        $('#movies').append('<li class="no-movies"><i class="material-icons icon-help">search</i>Enter a search keyword.</li>');
+        $movies.append('<li class="no-movies"><i class="material-icons icon-help">search</i>Enter a search keyword.</li>');
 
-        $('.no-movies').css('cursor', 'auto');
-        $('.main-content #pagination').empty();
+        $noMovies.css('cursor', 'auto');
+        $pagination.empty();
 
         return;
       }
 
       //if the search returns no movie data, display the text "No movies found that match: 'title'."
       if (data.Error === "Movie not found!") {
-        $('#movies').append('<li class="no-movies"><i class="material-icons icon-help">help_outline</i>No movies found that match: ' + searchKeywords + '.</li>');
+        $movies.append('<li class="no-movies"><i class="material-icons icon-help">help_outline</i>No movies found that match: ' + searchKeywords + '.</li>');
 
-        $('.no-movies').css('cursor', 'auto');
-        $('.main-content #pagination').empty();
+        $noMovies.css('cursor', 'auto');
+        $pagination.empty();
 
         return;
       }
@@ -81,16 +85,16 @@ $(function() {
         //if the "Poster" parameter returns "N/A", render the placeholder icon else render poster from imbd
         if (this.Poster === "N/A") {
           //data loads inside the #movies <ul>
-          $('#movies').append('<li><div class="poster-wrap"><i class="material-icons poster-placeholder">crop_original</i></div><span class="movie-title">' + this.Title + '</span><span class="movie-year">' + this.Year + '</span></li>');
+          $movies.append('<li><div class="poster-wrap"><i class="material-icons poster-placeholder">crop_original</i></div><span class="movie-title">' + this.Title + '</span><span class="movie-year">' + this.Year + '</span></li>');
         } else {
           //data loads inside the #movies <ul>
-          $('#movies').append('<li><div class="poster-wrap"><img class="movie-poster" src="' + this.Poster + '"></div><span class="movie-title">' + this.Title + '</span><span class="movie-year">' + this.Year + '</span></li>');
+          $movies.append('<li><div class="poster-wrap"><img class="movie-poster" src="' + this.Poster + '"></div><span class="movie-title">' + this.Title + '</span><span class="movie-year">' + this.Year + '</span></li>');
         }
 
       }); //$.each ()
 
       //if movies div has content within it
-      if ($('#movies').length) {
+      if ($movies.length) {
         var movieResults = $('#movies li');
         //calls function to display description page if user clicks
         //on a movie
@@ -114,7 +118,7 @@ $(function() {
       //utilizes jquery.get method to query imbd api for specific movie
       $.get("http://www.omdbapi.com/?t=" + movieTitle + "&y=" + movieYear + "&plot=full&r=json", function(data) {
         //removes content in #moves to make room for description content
-        $('#movies').empty();
+        $movies.empty();
 
         //adds descripton content after main-content div
         $('.main-content').after('<div class="desc-content"><div class="desc-color"><a href="" class="back-button"><i class="material-icons back-icon">keyboard_arrow_left</i> Search Results</a><div class="desc-container"><img src="' + data.Poster + '"><div class="desc-title">' + data.Title + ' (' + data.Year + ')</div><span class="imbd-rating">IMBD rating: ' + data.imdbRating + '</span></div></div><div class="plot"><span class="plot-title">Plot Synopsis:</span>' + data.Plot + '<a href="http://www.imdb.com/title/' + data.imdbID + '" class="imbd-link">View on IMBD</a></div></div>');
@@ -142,29 +146,33 @@ $(function() {
   //adds pagination buttons for search results
   function nextPrevPage(total, urlSafeKeywords, searchYear, searchKeywords) {
     //adds next & previous buttons
-    $('.main-content #pagination').html('<li><a href="#" id="previous">Previous</a><a href="#" id="next">Next</li>');
+    $pagination.html('<li><a href="#" id="previous">Previous</a><a href="#" id="next">Next</li>');
 
     //calculates total number of pages when 10 movies per page
     totalLinks = Math.ceil(total/moviesPerPage);
 
+    //define variables
+    var $previousButton = $('#previous'),
+        $nextButton = $('#next');
+
     //if first page of results is shown disable previous button &
     //add disabled look in css
     if (linkNumber === 1) {
-      $('#previous').addClass('disabled');
+      $previousButton.addClass('disabled');
     } else {
-      $('#previous').removeClass('disabled');
+      $previousButton.removeClass('disabled');
     }
 
     //if last page of results is shown disable next button &
     //add disabled look in css
     if (linkNumber === totalLinks) {
-      $('#next').addClass('disabled');
+      $nextButton.addClass('disabled');
     } else {
-      $('#next').removeClass('disabled');
+      $nextButton.removeClass('disabled');
     }
 
     //on click of previous button
-    $('#previous').on('click', function(e) {
+    $previousButton.on('click', function(e) {
       e.preventDefault();
 
       //if first page of results is shown make sure user cannot click
@@ -183,7 +191,7 @@ $(function() {
       getResults(urlSafeKeywords, searchYear, searchKeywords, linkNumber);
     }); //click ()
 
-    $('#next').on('click', function(e) {
+    $nextButton.on('click', function(e) {
       e.preventDefault();
 
       //if last page of results is shown make sure user cannot click
