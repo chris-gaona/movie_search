@@ -14,11 +14,12 @@ $(function() {
       totalLinks;
 
   var $movies = $('#movies'),
-      $noMovies = $('.no-movies'),
       $pagination = $('.main-content #pagination');
 
   //appends enter search icon & text on page load
   $movies.append('<li class="no-movies"><i class="material-icons icon-help">search</i>Enter a search keyword.</li>');
+
+  var $noMovies = $('.no-movies');
 
   //changes cursor to auto
   $noMovies.css('cursor', 'auto');
@@ -43,6 +44,12 @@ $(function() {
 
   }); //.on click
 
+  function resultError(htmlText) {
+    $movies.append(htmlText);
+    $noMovies.css('cursor', 'auto');
+    $pagination.empty();
+  }
+
   function getResults(urlSafeKeywords, searchYear, searchKeywords, linkNumber) {
     //utilizes jquery.get to retrieve ombd api results based on
     //user query
@@ -53,6 +60,7 @@ $(function() {
       resultAmount = data.totalResults;
 
       searchResults = data.Search;
+      var errorText;
 
       //empties the following 2 containers just in case there is already
       //content to make room for new query content
@@ -62,20 +70,15 @@ $(function() {
       //if user submits search without any query, add a message
       //to the user & stop all other actions after this
       if (data.Error === "Something went wrong.") {
-        $movies.append('<li class="no-movies"><i class="material-icons icon-help">search</i>Enter a search keyword.</li>');
-
-        $noMovies.css('cursor', 'auto');
-        $pagination.empty();
+        errorText = '<li class="no-movies"><i class="material-icons icon-help">search</i>Enter a search keyword.</li>'
+        resultError(errorText);
 
         return;
-      }
 
-      //if the search returns no movie data, display the text "No movies found that match: 'title'."
-      if (data.Error === "Movie not found!") {
-        $movies.append('<li class="no-movies"><i class="material-icons icon-help">help_outline</i>No movies found that match: ' + searchKeywords + '.</li>');
-
-        $noMovies.css('cursor', 'auto');
-        $pagination.empty();
+        //if the search returns no movie data, display the text "No movies found that match: 'title'."
+      } else if (data.Error === "Movie not found!") {
+        errorText = '<li class="no-movies"><i class="material-icons icon-help">help_outline</i>No movies found that match: ' + searchKeywords + '.</li>';
+        resultError(errorText);
 
         return;
       }
