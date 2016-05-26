@@ -1,36 +1,52 @@
 $(function() {
   'use strict';
 
+  var linkNumber;
+
+  //appends enter search icon & text on page load
   $('#movies').append('<li class="no-movies"><i class="material-icons icon-help">search</i>Enter a search keyword.</li>');
 
+  //changes cursor to auto
   $('.no-movies').css('cursor', 'auto');
 
+  //on click of submit button
   $('#submit').on('click', function(e) {
+    linkNumber = 1;
+
+    //prevents default behavior of anchor tag
     e.preventDefault();
 
+    //value of user input for search
     var searchKeywords = $('#search').val();
+    //changes user input to be used in url
     var urlSafeKeywords = searchKeywords.replace(' ', '+');
 
-    //Filter the search by year of release
+    //gets user input for year
     var searchYear = $('#year').val();
 
-    getResults(urlSafeKeywords, searchYear, searchKeywords);
+    //gets initial results based on user query
+    getResults(urlSafeKeywords, searchYear, searchKeywords, linkNumber);
 
   }); //.on click
 
   function getResults(urlSafeKeywords, searchYear, searchKeywords, linkNumber) {
+    //utilizes jquery.get to retrieve ombd api results based on
+    //user query
     $.get("http://www.omdbapi.com/?s=" + urlSafeKeywords + "&page=" + linkNumber + "&y=" + searchYear + "&r=json", function(data) {
-      console.log(data);
+      //data holds the results from ombd api
 
+      //total results from query
       var resultAmount = data.totalResults;
-      // paginateResults(resultAmount);
 
       var searchResults = data.Search;
 
+      //empties the following 2 containers just in case there is already
+      //content to make room for new query content
       $('.desc-content').empty();
       $('#movies').empty();
-      // $('.main-content #pagination').empty();
 
+      //if user submits search without any query, add a message
+      //to the user & stop all other actions after this
       if (data.Error === "Something went wrong.") {
         $('#movies').append('<li class="no-movies"><i class="material-icons icon-help">search</i>Enter a search keyword.</li>');
 
@@ -40,8 +56,7 @@ $(function() {
         return;
       }
 
-      //If the search returns no movie data, display the text "No movies found that match: 'title'."
-      //See a sample of the code you'll need to display in the index.html comments
+      //if the search returns no movie data, display the text "No movies found that match: 'title'."
       if (data.Error === "Movie not found!") {
         $('#movies').append('<li class="no-movies"><i class="material-icons icon-help">help_outline</i>No movies found that match: ' + searchKeywords + '.</li>');
 
@@ -51,36 +66,27 @@ $(function() {
         return;
       }
 
-      if (data.totalResults <= 10) {
-        $('.main-content #pagination').empty();
-      }
-
-      //The data should load inside the #movies <ul>
-
-      //Please see the comments in index.html for samples of the HTML you'll need to dynamically create with JavaScript
-      //For each movie returned, render an <li> displaying these items inside:
-      //Movie title
-      //Year of release
-      //Movie poster image
-      //Render an <img> that displays a poster image via the src attribute
-      //Make sure you use the exact class names provided in the CSS
+      //iterate through each item in the search array
       $.each(searchResults, function() {
-        //The app should not display broken images when no poster image data is returned
-        //If the "Poster" parameter returns "N/A", render the placeholder icon shown in the index.html comments
-
-        //Wrap the poster image -- or everything in the <li> -- in a <a> tag that links a movie to its imdb.com page
+        //if the "Poster" parameter returns "N/A", render the placeholder icon else render poster from imbd
         if (this.Poster === "N/A") {
+          //data loads inside the #movies <ul>
           $('#movies').append('<li><div class="poster-wrap"><i class="material-icons poster-placeholder">crop_original</i></div><span class="movie-title">' + this.Title + '</span><span class="movie-year">' + this.Year + '</span></li>');
         } else {
+          //data loads inside the #movies <ul>
           $('#movies').append('<li><div class="poster-wrap"><img class="movie-poster" src="' + this.Poster + '"></div><span class="movie-title">' + this.Title + '</span><span class="movie-year">' + this.Year + '</span></li>');
         }
 
       }); //$.each ()
 
+      //if movies div has content within it
       if ($('#movies').length) {
-        console.log('yup');
         var movieResults = $('#movies li');
+        //calls function to display description page if user clicks
+        //on a movie
         showDescription(movieResults, urlSafeKeywords, searchYear, searchKeywords, linkNumber);
+
+        //calls function to add pagination for results
         nextPrevPage(resultAmount, urlSafeKeywords, searchYear, searchKeywords);
       }
     }); //$.get ()
@@ -117,7 +123,7 @@ $(function() {
     });
   }
 
-  var linkNumber = 1;
+  // var linkNumber = 1;
   var moviesPerPage = 10;
 
   function nextPrevPage(total, urlSafeKeywords, searchYear, searchKeywords) {
@@ -147,6 +153,7 @@ $(function() {
       linkNumber--;
       console.log('Previous!');
       console.log(linkNumber);
+      console.log(totalLinks);
       nextPrevPage();
 
       getResults(urlSafeKeywords, searchYear, searchKeywords, linkNumber);
@@ -162,6 +169,7 @@ $(function() {
       linkNumber++;
       console.log('Next!');
       console.log(linkNumber);
+      console.log(totalLinks);
       nextPrevPage();
 
       getResults(urlSafeKeywords, searchYear, searchKeywords, linkNumber);

@@ -63,6 +63,10 @@ button {
   cursor: pointer;
 }
 
+#movies li:last-child {
+  margin-bottom: 50px;
+}
+
 .main-title {
   font-size: 1.4em;
   line-height: 80px;
