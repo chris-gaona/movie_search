@@ -1,7 +1,17 @@
 $(function() {
   'use strict';
 
-  var linkNumber;
+  //define variables
+  var linkNumber,
+      searchKeywords,
+      urlSafeKeywords,
+      searchYear,
+      resultAmount,
+      searchResults,
+      movieTitle,
+      movieYear,
+      moviesPerPage,
+      totalLinks;
 
   //appends enter search icon & text on page load
   $('#movies').append('<li class="no-movies"><i class="material-icons icon-help">search</i>Enter a search keyword.</li>');
@@ -17,12 +27,12 @@ $(function() {
     e.preventDefault();
 
     //value of user input for search
-    var searchKeywords = $('#search').val();
+    searchKeywords = $('#search').val();
     //changes user input to be used in url
-    var urlSafeKeywords = searchKeywords.replace(' ', '+');
+    urlSafeKeywords = searchKeywords.replace(' ', '+');
 
     //gets user input for year
-    var searchYear = $('#year').val();
+    searchYear = $('#year').val();
 
     //gets initial results based on user query
     getResults(urlSafeKeywords, searchYear, searchKeywords, linkNumber);
@@ -36,9 +46,9 @@ $(function() {
       //data holds the results from ombd api
 
       //total results from query
-      var resultAmount = data.totalResults;
+      resultAmount = data.totalResults;
 
-      var searchResults = data.Search;
+      searchResults = data.Search;
 
       //empties the following 2 containers just in case there is already
       //content to make room for new query content
@@ -90,31 +100,34 @@ $(function() {
         nextPrevPage(resultAmount, urlSafeKeywords, searchYear, searchKeywords);
       }
     }); //$.get ()
-  }
+  } //getResults()
 
-
-  //Create a movie description page
-  //Load or link to a description page displaying a movie's title, year, poster, plot information, and IMDb rating
-  //You'll need to write the CSS for this new page
-  //See the 'description-page.png' mockup in the 'examples' folder of the project files
+  //Load a description page displaying a movie's title, year, poster, plot information, and IMDb rating
+  //adds css in style.css mainly under "movie description components"
   function showDescription(results, keywords, year, searchKeywords, linkNumber) {
-    console.log(results);
+    //on click of results variable which holds li elements
     results.on('click', function() {
-      var movieTitle = $(this).find('.movie-title').text();
-      var movieYear = $(this).find('.movie-year').text();
-      console.log(movieTitle);
+      //get movie title & movie year from li element clicked
+      movieTitle = $(this).find('.movie-title').text();
+      movieYear = $(this).find('.movie-year').text();
+
+      //utilizes jquery.get method to query imbd api for specific movie
       $.get("http://www.omdbapi.com/?t=" + movieTitle + "&y=" + movieYear + "&plot=full&r=json", function(data) {
-        console.log(data);
+        //removes content in #moves to make room for description content
         $('#movies').empty();
 
+        //adds descripton content after main-content div
         $('.main-content').after('<div class="desc-content"><div class="desc-color"><a href="" class="back-button"><i class="material-icons back-icon">keyboard_arrow_left</i> Search Results</a><div class="desc-container"><img src="' + data.Poster + '"><div class="desc-title">' + data.Title + ' (' + data.Year + ')</div><span class="imbd-rating">IMBD rating: ' + data.imdbRating + '</span></div></div><div class="plot"><span class="plot-title">Plot Synopsis:</span>' + data.Plot + '<a href="http://www.imdb.com/title/' + data.imdbID + '" class="imbd-link">View on IMBD</a></div></div>');
 
+        //calls function create back to search results button
         backToResults(keywords, year, searchKeywords, linkNumber);
 
-      });
-    });
-  }
+      }); //$.get ()
+    }); //click ()
+  } //showDescription()
 
+  //when user clicks back to search results button on description page
+  //return them to the correct search result & page where they left off
   function backToResults(keywords, year, searchKeywords, linkNumber) {
     $('.back-button').on('click', function(e) {
       e.preventDefault();
@@ -123,57 +136,71 @@ $(function() {
     });
   }
 
-  // var linkNumber = 1;
-  var moviesPerPage = 10;
+  //holds amount of movies to display on each page
+  moviesPerPage = 10;
 
+  //adds pagination buttons for search results
   function nextPrevPage(total, urlSafeKeywords, searchYear, searchKeywords) {
+    //adds next & previous buttons
     $('.main-content #pagination').html('<li><a href="#" id="previous">Previous</a><a href="#" id="next">Next</li>');
 
-    var totalLinks = Math.ceil(total/moviesPerPage);
+    //calculates total number of pages when 10 movies per page
+    totalLinks = Math.ceil(total/moviesPerPage);
 
+    //if first page of results is shown disable previous button &
+    //add disabled look in css
     if (linkNumber === 1) {
-      $('#previous').prop('disabled', true).addClass('disabled');
+      $('#previous').addClass('disabled');
     } else {
-      $('#previous').prop('disabled', false).removeClass('disabled');
+      $('#previous').removeClass('disabled');
     }
 
+    //if last page of results is shown disable next button &
+    //add disabled look in css
     if (linkNumber === totalLinks) {
-      $('#next').prop('disabled', true).addClass('disabled');
+      $('#next').addClass('disabled');
     } else {
-      $('#next').prop('disabled', false).removeClass('disabled');
+      $('#next').removeClass('disabled');
     }
 
+    //on click of previous button
     $('#previous').on('click', function(e) {
       e.preventDefault();
 
+      //if first page of results is shown make sure user cannot click
+      //previous button
       if (linkNumber === 1) {
         return;
       }
 
+      //subtract 1 to linkNumber each time previous button is clicked
       linkNumber--;
-      console.log('Previous!');
-      console.log(linkNumber);
-      console.log(totalLinks);
+
+      //runs this current function again to check if statements
       nextPrevPage();
 
+      //calls getResults function to get previous page of results
       getResults(urlSafeKeywords, searchYear, searchKeywords, linkNumber);
-    });
+    }); //click ()
 
     $('#next').on('click', function(e) {
       e.preventDefault();
 
+      //if last page of results is shown make sure user cannot click
+      //next button
       if (linkNumber === totalLinks) {
         return;
       }
 
+      //add 1 to linkNumber each time next button is clicked
       linkNumber++;
-      console.log('Next!');
-      console.log(linkNumber);
-      console.log(totalLinks);
+
+      //runs this current function again to check if statements
       nextPrevPage();
 
+      //calls getResults function to get next page of results
       getResults(urlSafeKeywords, searchYear, searchKeywords, linkNumber);
-    });
-  }
+    }); //click ()
+  } //nextPrevPage()
 
 });
