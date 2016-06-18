@@ -174,7 +174,7 @@ button {
   padding: 10px;
 }
 
-.desc-content img {
+.desc-content img, .desc-content .no-poster {
   position: absolute;
   left: 50%;
   top: 200px;
@@ -182,6 +182,11 @@ button {
   width: 300px;
   margin: 0 30px 40px -150px;
   border: 10px solid #f6f7f7;
+}
+
+.desc-content .no-poster {
+  height: 430px;
+  background-color: #eee;
 }
 
 .desc-title {
@@ -360,12 +365,16 @@ button {
     top: 200px;
   }
 
-  .desc-content img {
+  .desc-content img, .desc-content .no-poster {
     position: relative;
     top: 0;
     left: 0;
     width: 200px;
     margin: 0 30px 40px 30px;
+  }
+
+  .desc-content .no-poster {
+    height: 285px;
   }
 
   .back-button {
@@ -397,8 +406,13 @@ button {
     height: 225px;
   }
 
-  .desc-content img {
+  .desc-content img, .desc-content .no-poster {
     width: auto;
+  }
+
+  .desc-content .no-poster {
+    width: 320px;
+    height: 460px;
   }
 
   .plot {
