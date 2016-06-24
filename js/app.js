@@ -40,13 +40,17 @@ $(function() {
     searchYear = $('#year').val();
 
     //gets initial results based on user query
+    // passes in needed parameters
     getResults(urlSafeKeywords, searchYear, searchKeywords, linkNumber);
 
   }); //.on click
 
+  //function to handle error message
+  // passes in html string as a parameter
   function resultError(htmlText) {
     $movies.append(htmlText);
     $noMovies.css('cursor', 'auto');
+    // removes pagination
     $pagination.empty();
   }
 
@@ -70,7 +74,7 @@ $(function() {
       //if user submits search without any query, add a message
       //to the user & stop all other actions after this
       if (data.Error === "Something went wrong.") {
-        errorText = '<li class="no-movies"><i class="material-icons icon-help">search</i>Enter a search keyword.</li>'
+        errorText = '<li class="no-movies"><i class="material-icons icon-help">search</i>Enter a search keyword.</li>';
         resultError(errorText);
 
         return;
@@ -131,7 +135,7 @@ $(function() {
           $('.main-content').after('<div class="desc-content"><div class="desc-color"><a href="" class="back-button"><i class="material-icons back-icon">keyboard_arrow_left</i> Search Results</a><div class="desc-container"><img src="' + data.Poster + '"><div class="desc-title">' + data.Title + ' (' + data.Year + ')</div><span class="imbd-rating">IMBD rating: ' + data.imdbRating + '</span></div></div><div class="plot"><span class="plot-title">Plot Synopsis:</span>' + data.Plot + '<a href="http://www.imdb.com/title/' + data.imdbID + '" class="imbd-link">View on IMBD</a></div></div>');
         }
 
-        //calls function create back to search results button
+        //calls function to create back to search results button
         backToResults(keywords, year, searchKeywords, linkNumber);
 
       }); //$.get ()
